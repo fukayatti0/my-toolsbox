@@ -1,5 +1,7 @@
 import NextAuth from 'next-auth';
 import GithubProvider from 'next-auth/providers/github';
+import { MongoDBAdapter } from '@next-auth/mongodb-adapter'
+import clientPromise from '../../../../lib/mongodb';
 
 const handler = NextAuth({
   providers: [
@@ -11,6 +13,7 @@ const handler = NextAuth({
   pages: {
     signIn: '/auth/signin',
   },
+  adapter: MongoDBAdapter(clientPromise),
 });
 
 export { handler as GET, handler as POST };

@@ -1,5 +1,4 @@
 "use client";
-import { useState } from 'react';
 import { Monomaniac_One } from 'next/font/google';
 
 const MonomaniacOne = Monomaniac_One({
@@ -8,24 +7,9 @@ const MonomaniacOne = Monomaniac_One({
 });
 
 export default function Home() {
-  const [backgroundImage, setBackgroundImage] = useState('');
-
-  const handleMouseEnter = (imageUrl: string) => {
-    setBackgroundImage(`url(${imageUrl})`);
-  };
-
-  const handleMouseLeave = () => {
-    setBackgroundImage('');
-  };
-
   return (
     <div
-      className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)] text-white"
-      style={{
-        backgroundImage: backgroundImage || 'linear-gradient(to right, #3b82f6, #8b5cf6)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      }}
+      className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)] text-white bg-gradient-to-r from-blue-500 to-purple-500 bg-cover bg-center"
     >
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
         <div className={`text-7xl font-bold ${MonomaniacOne.className} drop-shadow-lg`}>my tools box</div>
@@ -41,8 +25,6 @@ export default function Home() {
             href="/idea-manager"
             target="_blank"
             rel="noopener noreferrer"
-            onMouseEnter={() => handleMouseEnter('/idea-manager.png')}
-            onMouseLeave={handleMouseLeave}
           >
             Idea Manager
           </a>
@@ -51,8 +33,6 @@ export default function Home() {
             href="https://tool2.example.com"
             target="_blank"
             rel="noopener noreferrer"
-            onMouseEnter={() => handleMouseEnter('/images/tool2.jpg')}
-            onMouseLeave={handleMouseLeave}
           >
             ツール2
           </a>
@@ -61,8 +41,6 @@ export default function Home() {
             href="https://tool3.example.com"
             target="_blank"
             rel="noopener noreferrer"
-            onMouseEnter={() => handleMouseEnter('/images/tool3.jpg')}
-            onMouseLeave={handleMouseLeave}
           >
             ツール3
           </a>
