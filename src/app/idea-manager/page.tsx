@@ -2,6 +2,12 @@
 import React, { useState, useEffect } from "react";
 import IdeaList from "../../components/idea-manager/idea-list";
 import IdeaForm from "../../components/idea-manager/idea-form";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Idea Manager",
+  description: "アイデアを管理します",
+};
 
 interface Idea {
   title: string;
