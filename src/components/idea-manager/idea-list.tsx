@@ -232,7 +232,6 @@ const IdeaList: React.FC<{
               <ul className="list-disc list-inside">
                 {selectedIdea.todos.map((todo, idx) => (
                   <li
-                    key={idx}
                     className={`mb-2 ${
                       todo.completed ? "line-through text-gray-500" : ""
                     }`}
