@@ -118,7 +118,7 @@ const IdeaList: React.FC<{
               <h3 className="text-lg font-semibold text-gray-800 mb-2">
                 Todos:
               </h3>
-              <ul className="list-disc list-inside">
+              <ul className="list-none list-inside">
                 {idea.todos.map((todo, idx) => (
                   <li
                     key={idx}
@@ -229,9 +229,10 @@ const IdeaList: React.FC<{
               <h3 className="text-xl font-semibold text-gray-800 mb-3">
                 Todos:
               </h3>
-              <ul className="list-disc list-inside">
+              <ul className="list-none list-inside">
                 {selectedIdea.todos.map((todo, idx) => (
                   <li
+                    key={idx}
                     className={`mb-2 ${
                       todo.completed ? "line-through text-gray-500" : ""
                     }`}
