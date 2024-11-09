@@ -53,7 +53,10 @@ const IdeaList: React.FC<{
           >
             <button
               type="button"
-              onClick={() => onDelete(index)}
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete(index);
+              }}
               className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-colors duration-200"
               aria-label="Delete idea"
               title="Delete idea"
@@ -75,7 +78,10 @@ const IdeaList: React.FC<{
             </button>
             <button
               type="button"
-              onClick={() => onEdit(index)}
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit(index);
+              }}
               className="absolute top-4 right-12 text-gray-400 hover:text-blue-500 transition-colors duration-200"
               aria-label="Edit idea"
               title="Edit idea"
@@ -134,6 +140,7 @@ const IdeaList: React.FC<{
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center px-4 py-2 rounded-3xl text-sm font-medium text-white bg-gray-800 hover:bg-gray-700 transition-colors duration-200 shadow-sm hover:shadow-md"
+                onClick={(e) => e.stopPropagation()}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
