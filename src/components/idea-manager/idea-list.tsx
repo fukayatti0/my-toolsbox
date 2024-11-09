@@ -1,6 +1,11 @@
 import React from "react";
 import { useSession } from "next-auth/react";
 
+interface Todo {
+  task: string;
+  completed: boolean;
+}
+
 interface Idea {
   title: string;
   description: string;
@@ -8,6 +13,7 @@ interface Idea {
   languages: string[];
   frameworks: string[];
   githubUrl: string;
+  todos: Todo[];
 }
 
 const IdeaList: React.FC<{
@@ -96,8 +102,25 @@ const IdeaList: React.FC<{
               </span>
             ))}
           </div>
+          <div className="mb-4">
+            <h3 className="text-lg font-semibold text-gray-800 mb-2">Todos:</h3>
+            <ul className="list-disc list-inside">
+              {idea.todos.map((todo, idx) => (
+                <li
+                  key={idx}
+                  className={`mb-1 ${
+                    todo.completed ? "line-through text-gray-500" : ""
+                  }`}
+                >
+                  {todo.task}
+                </li>
+              ))}
+            </ul>
+          </div>
           <a
-            href={`https://github.com/${session?.user?.name || ''}/${idea.githubUrl}`}
+            href={`https://github.com/${session?.user?.name || ""}/${
+              idea.githubUrl
+            }`}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center px-4 py-2 rounded-3xl text-sm font-medium text-white bg-gray-800 hover:bg-gray-700 transition-colors duration-200 shadow-sm hover:shadow-md"
