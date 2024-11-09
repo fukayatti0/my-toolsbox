@@ -3,8 +3,8 @@ import React, { useState, useEffect } from "react";
 import Head from "next/head";
 import dynamic from "next/dynamic";
 
-const IdeaList = dynamic(() => import("../../components/idea-manager/idea-list"), { ssr: false });
-const IdeaForm = dynamic(() => import("../../components/idea-manager/idea-form"), { ssr: false });
+const IdeaList = dynamic(() => import("../../components/idea-manager/idea-list").then(mod => mod.default), { ssr: false });
+const IdeaForm = dynamic(() => import("../../components/idea-manager/idea-form").then(mod => mod.default), { ssr: false });
 
 interface Idea {
   title: string;
