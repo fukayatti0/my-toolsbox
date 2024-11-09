@@ -37,7 +37,8 @@ const IdeaList: React.FC<{
 
   const toggleTodo = (ideaIndex: number, todoIndex: number) => {
     const updatedIdeas = [...ideas];
-    updatedIdeas[ideaIndex].todos[todoIndex].completed = !updatedIdeas[ideaIndex].todos[todoIndex].completed;
+    updatedIdeas[ideaIndex].todos[todoIndex].completed =
+      !updatedIdeas[ideaIndex].todos[todoIndex].completed;
     setSelectedIdea({ ...updatedIdeas[ideaIndex] });
   };
 
@@ -94,26 +95,6 @@ const IdeaList: React.FC<{
             </h2>
             <p className="text-black mb-4 line-clamp-3">{idea.description}</p>
             <p className="text-gray-600 mb-4 line-clamp-3">{idea.details}</p>
-            <div className="flex flex-wrap items-center mb-4">
-              {idea.languages.map((language, idx) => (
-                <span
-                  key={idx}
-                  className="inline-flex items-center px-3 py-1.5 mr-2 mb-2 rounded-full text-sm font-medium bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-sm"
-                >
-                  {getIcon(language)}
-                  {language}
-                </span>
-              ))}
-              {idea.frameworks.map((framework, idx) => (
-                <span
-                  key={idx}
-                  className="inline-flex items-center px-3 py-1.5 mr-2 mb-2 rounded-full text-sm font-medium bg-gradient-to-r from-green-500 to-green-600 text-white shadow-sm"
-                >
-                  {getIcon(framework)}
-                  {framework}
-                </span>
-              ))}
-            </div>
             <div className="mb-4">
               <h3 className="text-lg font-semibold text-gray-800 mb-2">
                 Todos:
@@ -135,37 +116,60 @@ const IdeaList: React.FC<{
                           toggleTodo(index, idx);
                         }}
                         className="mr-2"
-                        aria-label={`Mark ${todo.task} as ${todo.completed ? "incomplete" : "complete"}`}
+                        aria-label={`Mark ${todo.task} as ${
+                          todo.completed ? "incomplete" : "complete"
+                        }`}
                       />
                       {todo.task}
                     </label>
-                    {todo.task}
                   </li>
                 ))}
               </ul>
             </div>
-            <a
-              href={`https://github.com/${session?.user?.name || ""}/${
-                idea.githubUrl
-              }`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center px-4 py-2 rounded-3xl text-sm font-medium text-white bg-gray-800 hover:bg-gray-700 transition-colors duration-200 shadow-sm hover:shadow-md"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-5 h-5 mr-2"
-                fill="currentColor"
-                viewBox="0 0 24 24"
+            <div className="flex flex-wrap">
+              <a
+                href={`https://github.com/${session?.user?.name || ""}/${
+                  idea.githubUrl
+                }`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center px-4 py-2 rounded-3xl text-sm font-medium text-white bg-gray-800 hover:bg-gray-700 transition-colors duration-200 shadow-sm hover:shadow-md"
               >
-                <path
-                  fillRule="evenodd"
-                  d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.84 9.49.5.09.68-.22.68-.48v-1.85c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02.8-.22 1.65-.33 2.5-.33.85 0 1.7.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .26.18.57.69.48C19.14 20.17 22 16.42 22 12c0-5.523-4.477-10-10-10z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              View on GitHub
-            </a>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-5 h-5 mr-2"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.17 6.84 9.49.5.09.68-.22.68-.48v-1.85c-2.78.6-3.37-1.34-3.37-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02.8-.22 1.65-.33 2.5-.33.85 0 1.7.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .26.18.57.69.48C19.14 20.17 22 16.42 22 12c0-5.523-4.477-10-10-10z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                View on GitHub
+              </a>
+              <div className="flex flex-wrap items-center mb-4">
+                {idea.languages.map((language, idx) => (
+                  <span
+                    key={idx}
+                    className="inline-flex items-center px-3 py-1.5 mr-2 mb-2 rounded-full text-sm font-medium bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-sm"
+                  >
+                    {getIcon(language)}
+                    {language}
+                  </span>
+                ))}
+                {idea.frameworks.map((framework, idx) => (
+                  <span
+                    key={idx}
+                    className="inline-flex items-center px-3 py-1.5 mr-2 mb-2 rounded-full text-sm font-medium bg-gradient-to-r from-green-500 to-green-600 text-white shadow-sm"
+                  >
+                    {getIcon(framework)}
+                    {framework}
+                  </span>
+                ))}
+              </div>
+            </div>
           </div>
         ))}
       </div>
