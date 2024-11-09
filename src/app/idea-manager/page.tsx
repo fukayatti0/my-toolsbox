@@ -13,6 +13,7 @@ interface Idea {
   frameworks: string[];
   githubUrl: string;
   createGitHubRepo: boolean;
+  todos: { task: string; completed: boolean }[];
 }
 
 const App: React.FC = () => {
