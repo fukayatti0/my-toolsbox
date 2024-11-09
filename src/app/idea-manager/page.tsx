@@ -1,7 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import IdeaList from "../../components/idea-manager/idea-list";
-import IdeaForm from "../../components/idea-manager/idea-form";
+import Head from "next/head";
+import dynamic from "next/dynamic";
+
+const IdeaList = dynamic(() => import("../../components/idea-manager/idea-list"), { ssr: false });
+const IdeaForm = dynamic(() => import("../../components/idea-manager/idea-form"), { ssr: false });
 
 interface Idea {
   title: string;
@@ -50,28 +53,34 @@ const App: React.FC = () => {
   };
 
   return (
-    <div
-      className={`min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4 sm:px-6 lg:px-8`}
-    >
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-12 text-center">
-          My Idea Organizer
-        </h1>
-        <div className="backdrop-blur-sm bg-white/30 rounded-xl p-6 shadow-lg">
-          <IdeaForm
-            onIdeaSubmit={handleIdeaSubmit}
-            initialIdea={
-              editingIndex !== null ? ideas[editingIndex] : undefined
-            }
+    <>
+      <Head>
+        <title>Idea Manager</title>
+        <meta name="description" content="アイデアを管理します" />
+      </Head>
+      <div
+        className={`min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4 sm:px-6 lg:px-8`}
+      >
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600 mb-12 text-center">
+            My Idea Organizer
+          </h1>
+          <div className="backdrop-blur-sm bg-white/30 rounded-xl p-6 shadow-lg">
+            <IdeaForm
+              onIdeaSubmit={handleIdeaSubmit}
+              initialIdea={
+                editingIndex !== null ? ideas[editingIndex] : undefined
+              }
+            />
+          </div>
+          <IdeaList
+            ideas={ideas}
+            onEdit={handleEditIdea}
+            onDelete={handleDeleteIdea}
           />
         </div>
-        <IdeaList
-          ideas={ideas}
-          onEdit={handleEditIdea}
-          onDelete={handleDeleteIdea}
-        />
       </div>
-    </div>
+    </>
   );
 };
 
