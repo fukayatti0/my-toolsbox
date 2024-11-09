@@ -181,9 +181,9 @@ const IdeaForm: React.FC<{
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label>アイデアのタイトル</label>
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="bg-white p-6 rounded-lg shadow-md">
+        <label className="block text-lg font-medium">アイデアのタイトル</label>
         <input
           type="text"
           name="title"
@@ -193,8 +193,8 @@ const IdeaForm: React.FC<{
           className="w-full p-3 my-2 border-2 border-gray-200 rounded-lg text-base transition-colors duration-300 focus:outline-none focus:border-blue-500"
         />
       </div>
-      <div>
-        <label>アイデアの概要</label>
+      <div className="bg-white p-6 rounded-lg shadow-md">
+        <label className="block text-lg font-medium">アイデアの概要</label>
         <textarea
           name="description"
           placeholder="アイデアの概要"
@@ -205,8 +205,8 @@ const IdeaForm: React.FC<{
           className="w-full p-3 my-2 border-2 border-gray-200 rounded-lg text-base transition-colors duration-300 focus:outline-none focus:border-blue-500"
         />
       </div>
-      <div>
-        <label>アイデアの詳細</label>
+      <div className="bg-white p-6 rounded-lg shadow-md">
+        <label className="block text-lg font-medium">アイデアの詳細</label>
         <textarea
           name="details"
           placeholder="アイデアの詳細"
@@ -217,10 +217,10 @@ const IdeaForm: React.FC<{
           className="w-full p-3 my-2 border-2 border-gray-200 rounded-lg text-base transition-colors duration-300 focus:outline-none focus:border-blue-500"
         />
       </div>
-      <div>
-        <label>使用する言語</label>
+      <div className="bg-white p-6 rounded-lg shadow-md">
+        <label className="block text-lg font-medium">使用する言語</label>
         {idea.languages.map((language, index) => (
-          <div key={index} className="items-center">
+          <div key={index} className="flex items-center space-x-2">
             <select
               name="languages"
               title="使用する言語"
@@ -240,7 +240,7 @@ const IdeaForm: React.FC<{
               <button
                 type="button"
                 onClick={() => handleAddField("languages")}
-                className="w-full p-1 text-2xl bg-blue-500 text-white rounded-lg"
+                className="p-2 bg-blue-500 text-white rounded-lg"
               >
                 +
               </button>
@@ -248,10 +248,10 @@ const IdeaForm: React.FC<{
           </div>
         ))}
       </div>
-      <div>
-        <label>使用するフレームワーク</label>
+      <div className="bg-white p-6 rounded-lg shadow-md">
+        <label className="block text-lg font-medium">使用するフレームワーク</label>
         {idea.frameworks.map((framework, index) => (
-          <div key={index} className="items-center">
+          <div key={index} className="flex items-center space-x-2">
             <select
               name="frameworks"
               title="使用するフレームワーク"
@@ -271,7 +271,7 @@ const IdeaForm: React.FC<{
               <button
                 type="button"
                 onClick={() => handleAddField("frameworks")}
-                className="w-full p-1 text-2xl bg-blue-500 text-white rounded-lg"
+                className="p-2 bg-blue-500 text-white rounded-lg"
               >
                 +
               </button>
@@ -279,8 +279,8 @@ const IdeaForm: React.FC<{
           </div>
         ))}
       </div>
-      <div>
-        <label>GitHubプロジェクト名</label>
+      <div className="bg-white p-6 rounded-lg shadow-md">
+        <label className="block text-lg font-medium">GitHubプロジェクト名</label>
         <input
           type="text"
           name="githubUrl"
@@ -290,8 +290,8 @@ const IdeaForm: React.FC<{
           className="w-full p-3 my-2 border-2 border-gray-200 rounded-lg text-base transition-colors duration-300 focus:outline-none focus:border-blue-500"
         />
       </div>
-      <div className="my-4">
-        <label className="flex items-center">
+      <div className="bg-white p-6 rounded-lg shadow-md">
+        <label className="flex items-center text-lg font-medium">
           <input
             type="checkbox"
             name="createGitHubRepo"
@@ -302,10 +302,10 @@ const IdeaForm: React.FC<{
           GitHubリポジトリを作成する
         </label>
       </div>
-      <div>
-        <label>Todoリスト</label>
+      <div className="bg-white p-6 rounded-lg shadow-md">
+        <label className="block text-lg font-medium">Todoリスト</label>
         {idea.todos.map((todo, index) => (
-          <div key={index} className="items-center">
+          <div key={index} className="flex items-center space-x-2">
             <input
               type="text"
               name="task"
@@ -314,7 +314,7 @@ const IdeaForm: React.FC<{
               onChange={(e) => handleTodoChange(e, index)}
               className="w-full p-3 my-2 border-2 border-gray-200 rounded-lg"
             />
-            <label className="ml-2 flex items-center">
+            <label className="flex items-center space-x-1">
               <input
                 type="checkbox"
                 name="completed"
@@ -328,7 +328,7 @@ const IdeaForm: React.FC<{
               <button
                 type="button"
                 onClick={() => handleAddField("todos")}
-                className="w-full p-1 text-2xl bg-blue-500 text-white rounded-lg"
+                className="p-2 bg-blue-500 text-white rounded-lg"
               >
                 +
               </button>
