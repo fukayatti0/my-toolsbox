@@ -305,7 +305,7 @@ const IdeaForm: React.FC<{
       <div>
         <label>Todoリスト</label>
         {idea.todos.map((todo, index) => (
-          <div key={index} className="flex items-center">
+          <div key={index} className="items-center">
             <input
               type="text"
               name="task"
