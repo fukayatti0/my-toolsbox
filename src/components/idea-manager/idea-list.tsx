@@ -35,6 +35,12 @@ const IdeaList: React.FC<{
     );
   };
 
+  const toggleTodo = (ideaIndex: number, todoIndex: number) => {
+    const updatedIdeas = [...ideas];
+    updatedIdeas[ideaIndex].todos[todoIndex].completed = !updatedIdeas[ideaIndex].todos[todoIndex].completed;
+    setSelectedIdea({ ...updatedIdeas[ideaIndex] });
+  };
+
   return (
     <>
       <div className="mt-12 grid gap-6 md:grid-cols-2">
@@ -120,6 +126,19 @@ const IdeaList: React.FC<{
                       todo.completed ? "line-through text-gray-500" : ""
                     }`}
                   >
+                    <label className="inline-flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={todo.completed}
+                        onChange={(e) => {
+                          e.stopPropagation();
+                          toggleTodo(index, idx);
+                        }}
+                        className="mr-2"
+                        aria-label={`Mark ${todo.task} as ${todo.completed ? "incomplete" : "complete"}`}
+                      />
+                      {todo.task}
+                    </label>
                     {todo.task}
                   </li>
                 ))}
@@ -218,6 +237,18 @@ const IdeaList: React.FC<{
                       todo.completed ? "line-through text-gray-500" : ""
                     }`}
                   >
+                    <label className="inline-flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={todo.completed}
+                        onChange={(e) => {
+                          e.stopPropagation();
+                          toggleTodo(ideas.indexOf(selectedIdea), idx);
+                        }}
+                        className="mr-2"
+                      />
+                      {todo.task}
+                    </label>
                     {todo.task}
                   </li>
                 ))}
