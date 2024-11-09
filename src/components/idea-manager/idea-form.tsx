@@ -324,17 +324,17 @@ const IdeaForm: React.FC<{
               />
               完了
             </label>
-            {index === idea.todos.length - 1 && (
-              <button
-                type="button"
-                onClick={() => handleAddField("frameworks")}
-                className="w-full p-1 text-2xl bg-blue-500 text-white rounded-lg"
-              >
-                +
-              </button>
-            )}
           </div>
         ))}
+        <div>
+          <button
+            type="button"
+            onClick={() => handleAddField("todos")}
+            className="w-full p-1 text-2xl bg-blue-500 text-white rounded-lg"
+          >
+            +
+          </button>
+        </div>
       </div>
       <button
         type="submit"
