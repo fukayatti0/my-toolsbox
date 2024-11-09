@@ -114,7 +114,10 @@ const IdeaForm: React.FC<{
     fieldName?: string
   ) => {
     if (e.target.name === "createGitHubRepo") {
-      setIdea({ ...idea, createGitHubRepo: (e.target as HTMLInputElement).checked });
+      setIdea({
+        ...idea,
+        createGitHubRepo: (e.target as HTMLInputElement).checked,
+      });
       return;
     }
 
@@ -179,7 +182,126 @@ const IdeaForm: React.FC<{
 
   return (
     <form onSubmit={handleSubmit}>
-      {/* 既存のフォームフィールド */}
+      <div>
+        <label>アイデアのタイトル</label>
+        <input
+          type="text"
+          name="title"
+          placeholder="アイデアのタイトル"
+          value={idea.title}
+          onChange={handleChange}
+          className="w-full p-3 my-2 border-2 border-gray-200 rounded-lg text-base transition-colors duration-300 focus:outline-none focus:border-blue-500"
+        />
+      </div>
+      <div>
+        <label>アイデアの概要</label>
+        <textarea
+          name="description"
+          placeholder="アイデアの概要"
+          value={idea.description}
+          onChange={(e) =>
+            handleChange(e as React.ChangeEvent<HTMLTextAreaElement>)
+          }
+          className="w-full p-3 my-2 border-2 border-gray-200 rounded-lg text-base transition-colors duration-300 focus:outline-none focus:border-blue-500"
+        />
+      </div>
+      <div>
+        <label>アイデアの詳細</label>
+        <textarea
+          name="details"
+          placeholder="アイデアの詳細"
+          value={idea.details}
+          onChange={(e) =>
+            handleChange(e as React.ChangeEvent<HTMLTextAreaElement>)
+          }
+          className="w-full p-3 my-2 border-2 border-gray-200 rounded-lg text-base transition-colors duration-300 focus:outline-none focus:border-blue-500"
+        />
+      </div>
+      <div>
+        <label>使用する言語</label>
+        {idea.languages.map((language, index) => (
+          <div key={index} className="items-center">
+            <select
+              name="languages"
+              title="使用する言語"
+              value={language}
+              onChange={(e) =>
+                handleChange(e as React.ChangeEvent<HTMLSelectElement>, index)
+              }
+              className="w-full p-3 my-2 border-2 border-gray-200 rounded-lg text-base transition-colors duration-300 focus:outline-none focus:border-blue-500"
+            >
+              {languages.map((lang) => (
+                <option key={lang.label} value={lang.value}>
+                  {lang.label}
+                </option>
+              ))}
+            </select>
+            {index === idea.languages.length - 1 && (
+              <button
+                type="button"
+                onClick={() => handleAddField("languages")}
+                className="w-full p-1 text-2xl bg-blue-500 text-white rounded-lg"
+              >
+                +
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+      <div>
+        <label>使用するフレームワーク</label>
+        {idea.frameworks.map((framework, index) => (
+          <div key={index} className="items-center">
+            <select
+              name="frameworks"
+              title="使用するフレームワーク"
+              value={framework}
+              onChange={(e) =>
+                handleChange(e as React.ChangeEvent<HTMLSelectElement>, index)
+              }
+              className="w-full p-3 my-2 border-2 border-gray-200 rounded-lg text-base transition-colors duration-300 focus:outline-none focus:border-blue-500"
+            >
+              {frameworks.map((fw) => (
+                <option key={fw.value} value={fw.value}>
+                  {fw.label}
+                </option>
+              ))}
+            </select>
+            {index === idea.frameworks.length - 1 && (
+              <button
+                type="button"
+                onClick={() => handleAddField("frameworks")}
+                className="w-full p-1 text-2xl bg-blue-500 text-white rounded-lg"
+              >
+                +
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+      <div>
+        <label>GitHubプロジェクト名</label>
+        <input
+          type="text"
+          name="githubUrl"
+          placeholder="GitHubプロジェクト名"
+          value={idea.githubUrl}
+          onChange={handleChange}
+          className="w-full p-3 my-2 border-2 border-gray-200 rounded-lg text-base transition-colors duration-300 focus:outline-none focus:border-blue-500"
+        />
+      </div>
+      <div className="my-4">
+        <label className="flex items-center">
+          <input
+            type="checkbox"
+            name="createGitHubRepo"
+            checked={idea.createGitHubRepo}
+            onChange={handleChange}
+            className="mr-2"
+          />
+          GitHubリポジトリを作成する
+        </label>
+      </div>
       <div>
         <label>Todoリスト</label>
         {idea.todos.map((todo, index) => (
@@ -214,7 +336,6 @@ const IdeaForm: React.FC<{
           </div>
         ))}
       </div>
-      {/* 既存のフォームフィールド */}
       <button
         type="submit"
         className="w-full bg-blue-500 text-white font-semibold py-3 px-6 rounded-lg mt-4"
