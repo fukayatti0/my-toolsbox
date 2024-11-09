@@ -38,9 +38,7 @@ const IdeaForm: React.FC<{
   }, [initialIdea]);
 
   const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement
-    >,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
     index?: number,
     fieldName?: string
   ) => {
@@ -113,7 +111,41 @@ const IdeaForm: React.FC<{
 
   return (
     <form onSubmit={handleSubmit}>
-      {/* Other form fields */}
+      <div>
+        <label>アイデアのタイトル</label>
+        <input
+          type="text"
+          name="title"
+          placeholder="アイデアのタイトル"
+          value={idea.title}
+          onChange={handleChange}
+          className="w-full p-3 my-2 border-2 border-gray-200 rounded-lg text-base transition-colors duration-300 focus:outline-none focus:border-blue-500"
+        />
+      </div>
+      <div>
+        <label>アイデアの概要</label>
+        <textarea
+          name="description"
+          placeholder="アイデアの概要"
+          value={idea.description}
+          onChange={(e) =>
+            handleChange(e as React.ChangeEvent<HTMLTextAreaElement>)
+          }
+          className="w-full p-3 my-2 border-2 border-gray-200 rounded-lg text-base transition-colors duration-300 focus:outline-none focus:border-blue-500"
+        />
+      </div>
+      <div>
+        <label>アイデアの詳細</label>
+        <textarea
+          name="details"
+          placeholder="アイデアの詳細"
+          value={idea.details}
+          onChange={(e) =>
+            handleChange(e as React.ChangeEvent<HTMLTextAreaElement>)
+          }
+          className="w-full p-3 my-2 border-2 border-gray-200 rounded-lg text-base transition-colors duration-300 focus:outline-none focus:border-blue-500"
+        />
+      </div>
       <div>
         <label>使用する言語</label>
         {idea.languages.map((language, index) => (
@@ -162,7 +194,59 @@ const IdeaForm: React.FC<{
           </div>
         ))}
       </div>
-      {/* Remaining form fields and submit button */}
+      <div>
+        <label>GitHubプロジェクト名</label>
+        <input
+          type="text"
+          name="githubUrl"
+          placeholder="GitHubプロジェクト名"
+          value={idea.githubUrl}
+          onChange={handleChange}
+          className="w-full p-3 my-2 border-2 border-gray-200 rounded-lg text-base transition-colors duration-300 focus:outline-none focus:border-blue-500"
+        />
+      </div>
+      <div className="my-4">
+        <label className="flex items-center">
+          <input
+            type="checkbox"
+            name="createGitHubRepo"
+            checked={idea.createGitHubRepo}
+            onChange={handleChange}
+            className="mr-2"
+          />
+          GitHubリポジトリを作成する
+        </label>
+      </div>
+      <div>
+        <label>Todoリスト</label>
+        {idea.todos.map((todo, index) => (
+          <div key={index} className="items-center">
+            <input
+              type="text"
+              name="task"
+              placeholder="タスクを入力"
+              value={todo.task}
+              onChange={(e) => handleTodoChange(e, index)}
+              className="w-full p-3 my-2 border-2 border-gray-200 rounded-lg"
+            />
+            {index === idea.todos.length - 1 && (
+              <button
+                type="button"
+                onClick={() => handleAddField("todos")}
+                className="w-full p-1 text-2xl bg-blue-500 text-white rounded-lg"
+              >
+                +
+              </button>
+            )}
+          </div>
+        ))}
+      </div>
+      <button
+        type="submit"
+        className="w-full bg-blue-500 text-white font-semibold py-3 px-6 rounded-lg mt-4"
+      >
+        追加
+      </button>
     </form>
   );
 };
