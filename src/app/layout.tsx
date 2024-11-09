@@ -25,10 +25,8 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <NextAuthProvider>
-          <Header />
-          <div className="main-content mt-16"> {/* Adjust the margin-top value as needed */}
+          <Header /> {/* Adjust the margin-top value as needed */}
             {children}
-          </div>
         </NextAuthProvider>
       </body>
     </html>
