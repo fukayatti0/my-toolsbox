@@ -3,8 +3,14 @@
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
+import { Monomaniac_One } from "next/font/google";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+
+const monomaniacOne = Monomaniac_One({
+  weight: "400",
+  subsets: ["latin"],
+});
 
 export default function Header() {
   const { data: session } = useSession();
@@ -74,7 +80,7 @@ export default function Header() {
           {/* Logo and brand */}
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center">
-              <span className="text-white text-xl font-bold">My Tools Box</span>
+              <span className={`text-white text-xl font-bold ${monomaniacOne.className}`}>My Tools Box</span>
             </Link>
           </div>
 
