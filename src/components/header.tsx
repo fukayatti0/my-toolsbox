@@ -71,7 +71,6 @@ export default function AuthStatus() {
             >
               My tools box
             </Link>
-            <HamburgerButton />
           </div>
 
           <div
@@ -93,6 +92,7 @@ export default function AuthStatus() {
               className="rounded-full cursor-pointer border-2 border-white"
               onClick={() => setShowSignOut(!showSignOut)}
             />
+            <HamburgerButton />
             {showSignOut && (
               <div
                 className="absolute right-0 mt-2 w-48 bg-white text-black rounded-lg shadow-lg"
