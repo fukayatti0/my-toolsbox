@@ -1,10 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Head from "next/head";
-import dynamic from "next/dynamic";
-
-const IdeaList = dynamic(() => import("../../components/idea-manager/idea-list").then(mod => mod.default), { ssr: false });
-const IdeaForm = dynamic(() => import("../../components/idea-manager/idea-form").then(mod => mod.default), { ssr: false });
+import IdeaList from "../../components/idea-manager/idea-list";
+import IdeaForm from "../../components/idea-manager/idea-form";
 
 interface Idea {
   title: string;
@@ -77,6 +75,7 @@ const App: React.FC = () => {
             ideas={ideas}
             onEdit={handleEditIdea}
             onDelete={handleDeleteIdea}
+            session={{ user: { name: "defaultUser" } }}
           />
         </div>
       </div>
