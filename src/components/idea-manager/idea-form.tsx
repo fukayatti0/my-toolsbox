@@ -305,7 +305,7 @@ const IdeaForm: React.FC<{
       <div>
         <label>Todoリスト</label>
         {idea.todos.map((todo, index) => (
-          <div key={index} className="flex items-center">
+          <div key={index} className="items-center">
             <input
               type="text"
               name="task"
@@ -324,17 +324,17 @@ const IdeaForm: React.FC<{
               />
               完了
             </label>
+            {index === idea.todos.length - 1 && (
+              <button
+                type="button"
+                onClick={() => handleAddField("todos")}
+                className="w-full p-1 text-2xl bg-blue-500 text-white rounded-lg"
+              >
+                +
+              </button>
+            )}
           </div>
         ))}
-        <div>
-          <button
-            type="button"
-            onClick={() => handleAddField("todos")}
-            className="w-full p-1 text-2xl bg-blue-500 text-white rounded-lg"
-          >
-            +
-          </button>
-        </div>
       </div>
       <button
         type="submit"
