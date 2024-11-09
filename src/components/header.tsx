@@ -79,7 +79,7 @@ export default function Header() {
           <div
             className={`${
               isMenuOpen ? "block" : "hidden"
-            } md:flex w-full md:w-auto md:items-center mt-4 md:mt-0 transition-all duration-300`}
+            } md:flex w-auto md:items-center mt-4 md:mt-0 transition-all duration-300`}
           >
             <nav className="flex flex-col md:flex-row gap-4">
               <MenuItems />
@@ -137,7 +137,7 @@ export default function Header() {
         <div
           className={`${
             isMenuOpen ? "block" : "hidden"
-          } md:flex w-full md:w-auto md:items-center mt-4 md:mt-0 transition-all duration-300`}
+          } md:flex w-auto md:items-center mt-4 md:mt-0 transition-all duration-300`}
         >
           <nav className="flex flex-col md:flex-row gap-4">
             <MenuItems />
