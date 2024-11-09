@@ -1,5 +1,6 @@
 import React from "react";
-
+import { useSession } from "next-auth/react";
+import { useState } from "react";
 interface Idea {
   title: string;
   description: string;
@@ -8,6 +9,8 @@ interface Idea {
   frameworks: string[];
   githubUrl: string;
 }
+
+const { data: session } = useSession();
 
 const IdeaList: React.FC<{
   ideas: Idea[];
@@ -95,7 +98,7 @@ const IdeaList: React.FC<{
             ))}
           </div>
           <a
-            href={`https://github.com/${idea.githubUrl}`}
+            href={`https://github.com/${session?.user?.name}/${idea.githubUrl}`}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center px-4 py-2 rounded-3xl text-sm font-medium text-white bg-gray-800 hover:bg-gray-700 transition-colors duration-200 shadow-sm hover:shadow-md"
