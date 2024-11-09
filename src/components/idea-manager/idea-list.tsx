@@ -249,7 +249,6 @@ const IdeaList: React.FC<{
                       />
                       {todo.task}
                     </label>
-                    {todo.task}
                   </li>
                 ))}
               </ul>
