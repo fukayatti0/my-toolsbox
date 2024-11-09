@@ -1,8 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Head from "next/head";
-import IdeaList from "../../components/idea-manager/idea-list";
-import IdeaForm from "../../components/idea-manager/idea-form";
+import dynamic from "next/dynamic";
+
+const IdeaList = dynamic(() => import("../../components/idea-manager/idea-list"), { ssr: false });
+const IdeaForm = dynamic(() => import("../../components/idea-manager/idea-form"), { ssr: false });
 
 interface Idea {
   title: string;
