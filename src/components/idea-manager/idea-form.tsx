@@ -327,8 +327,8 @@ const IdeaForm: React.FC<{
             {index === idea.todos.length - 1 && (
               <button
                 type="button"
-                onClick={() => handleAddField("todos")}
-                className="p-1 text-2xl bg-blue-500 text-white rounded-lg ml-2"
+                onClick={() => handleAddField("frameworks")}
+                className="w-full p-1 text-2xl bg-blue-500 text-white rounded-lg"
               >
                 +
               </button>
@@ -337,11 +337,10 @@ const IdeaForm: React.FC<{
         ))}
       </div>
       <button
-        type="button"
-        onClick={() => handleAddField("frameworks")}
-        className="w-full p-1 text-2xl bg-blue-500 text-white rounded-lg"
+        type="submit"
+        className="w-full bg-blue-500 text-white font-semibold py-3 px-6 rounded-lg mt-4"
       >
-        +
+        追加
       </button>
     </form>
   );
