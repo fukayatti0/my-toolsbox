@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 import Head from "next/head";
 import IdeaList from "../../components/idea-manager/idea-list";
 import IdeaForm from "../../components/idea-manager/idea-form";
@@ -75,7 +76,6 @@ const App: React.FC = () => {
             ideas={ideas}
             onEdit={handleEditIdea}
             onDelete={handleDeleteIdea}
-            session={{ user: { name: "defaultUser" } }}
           />
         </div>
       </div>
