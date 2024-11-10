@@ -1,49 +1,23 @@
-import type { NextConfig } from "next";
-import type { Configuration } from "webpack";
+import { NextConfig } from "next";
+import WasmPackPlugin from "@wasm-tool/wasm-pack-plugin";
+import path from "path";
 
 const nextConfig: NextConfig = {
-  reactStrictMode: true,
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'avatars.githubusercontent.com',
-        port: '',
-        pathname: '/u/**',
-      },
-    ],
+    domains: ["avatars.githubusercontent.com"],
   },
-  webpack: (config: Configuration) => {
-    config.resolve = config.resolve || {};
-    config.resolve.fallback = { fs: false };
+  webpack(config, { isServer, dev }) {
     config.experiments = {
       ...config.experiments,
       asyncWebAssembly: true,
       layers: true,
     };
-
-    // WebAssemblyファイルを処理するためのローダーを追加
-    config.module = config.module || {};
-    config.module.rules = config.module.rules || [];
-    config.module.rules.push({
-      test: /\.wasm$/,
-      type: 'webassembly/async',
-    });
+    config.output.webassemblyModuleFilename =
+      isServer && !dev
+        ? "../static/wasm/[modulehash].wasm"
+        : "static/wasm/[modulehash].wasm";
 
     return config;
-  },
-  async headers() {
-    return [
-      {
-        source: "/(.*).wasm",
-        headers: [
-          {
-            key: "Content-Type",
-            value: "application/wasm",
-          },
-        ],
-      },
-    ];
   },
 };
 
