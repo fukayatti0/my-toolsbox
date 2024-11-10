@@ -6,16 +6,13 @@ const nextConfig: NextConfig = {
   images: {
     domains: ["avatars.githubusercontent.com"],
   },
-  webpack(config, { isServer, dev }) {
+  webpack: (config, { isServer }) => {
     config.experiments = {
-      ...config.experiments,
       asyncWebAssembly: true,
-      layers: true,
     };
-    config.output.webassemblyModuleFilename =
-      isServer && !dev
-        ? "../static/wasm/[modulehash].wasm"
-        : "static/wasm/[modulehash].wasm";
+    config.output.webassemblyModuleFilename = (isServer ? '../' : '') + 'static/wasm/webassembly.wasm';
+    return config;
+  },
 
     return config;
   },
