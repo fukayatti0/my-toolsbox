@@ -68,7 +68,7 @@ const ImageConverterPage = () => {
 
             const converted = await Promise.all(
                 formats.map(async (format) => {
-                    const result = format.func();
+                    const result = await format.func();
                     const blob = new Blob([result], { type: format.mime });
                     return {
                         format: format.name,
