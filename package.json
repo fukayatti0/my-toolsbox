@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "run-s build:wasm build:js",
+    "build:js": "tsc && vite build",
+    "build:wasm": "cd wasm && wasm-pack build --target web --release",
     "start": "next start",
     "lint": "next lint"
   },
