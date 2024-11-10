@@ -36,8 +36,11 @@ const ImageConverterPage = () => {
             const imageConverterModule = await import(
                 "../../lib/image-converter/image_converter"
             ).catch((err) => {
-                throw new Error("Failed to load WebAssembly module: " + err.message);
+                setError("Failed to load WebAssembly module: " + err.message);
+                setIsLoading(false);
+                return;
             });
+            if (!imageConverterModule) return;
             const imageConverter = await imageConverterModule.default();
             const converter = new imageConverter.ImageConverter();
 

@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 import type { Configuration } from "webpack";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  reactStrictMode: true,
   images: {
     remotePatterns: [
       {
@@ -31,6 +31,19 @@ const nextConfig: NextConfig = {
     });
 
     return config;
+  },
+  async headers() {
+    return [
+      {
+        source: "/(.*).wasm",
+        headers: [
+          {
+            key: "Content-Type",
+            value: "application/wasm",
+          },
+        ],
+      },
+    ];
   },
 };
 
