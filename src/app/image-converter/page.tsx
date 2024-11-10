@@ -32,20 +32,17 @@ const ImageConverterPage = () => {
         setImageInfo(null);
 
         try {
-            // Ensure the WebAssembly module path is correct
-            const imageConverterModule = await import(
-                "../../lib/image-converter/image_converter"
-            ).catch((err) => {
-                setError("Failed to load WebAssembly module: " + err.message);
-                setIsLoading(false);
-                return;
+            // Import WASM module
+            const wasmModule = await import('../../lib/image-converter/image_converter');
+            const { ImageConverter } = await wasmModule.default({
+                env: {
+                    memory: new WebAssembly.Memory({ initial: 256 }),
+                }
             });
-            if (!imageConverterModule) return;
-            const imageConverter = await imageConverterModule.default();
-            const converter = new imageConverter.ImageConverter();
+            const converter = new ImageConverter();
 
-            const buffer = await file.arrayBuffer();
-            const uint8Array = new Uint8Array(buffer);
+            const fileBuffer = await file.arrayBuffer();
+            const uint8Array = new Uint8Array(fileBuffer);
             const inputString = new TextDecoder().decode(uint8Array);
 
             const formats = [
