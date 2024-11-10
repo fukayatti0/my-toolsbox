@@ -1,223 +1,196 @@
-// app/image-converter/page.tsx
 "use client";
-import React, { useCallback, useState } from "react";
+import React, { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
-import { Loader2, Upload, Image as ImageIcon, Download } from "lucide-react";
+import { Upload, Image as ImageIcon, Download } from "lucide-react";
 
-interface ConvertedImage {
-    format: string;
+const ImageConverter = () => {
+  const [file, setFile] = useState<File | null>(null);
+  const [convertedImage, setConvertedImage] = useState<{
     url: string;
-    size: number;
-}
+    dimensions: string;
+    format: string;
+  } | null>(null);
+  const [isConverting, setIsConverting] = useState(false);
+  const [selectedFormat, setSelectedFormat] = useState("png");
+  const [error, setError] = useState("");
 
-const ImageConverterPage = () => {
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [_originalImage, setOriginalImage] = useState<File | null>(null);
-    const [convertedImages, setConvertedImages] = useState<ConvertedImage[]>([]);
-    const [imageInfo, setImageInfo] = useState<{
-        width: number;
-        height: number;
-        channels: number;
-    } | null>(null);
+  const onDrop = useCallback(async (acceptedFiles: File[]) => {
+    setError("");
+    const file = acceptedFiles[0];
+    if (file) {
+      setFile(file);
+      setConvertedImage(null);
+    }
+  }, []);
 
-    const onDrop = useCallback(async (acceptedFiles: File[]) => {
-        const file = acceptedFiles[0];
-        if (!file) return;
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      "image/*": [
+        ".jpeg",
+        ".jpg",
+        ".png",
+        ".gif",
+        ".webp",
+        ".bmp",
+        ".ico",
+        ".tiff",
+        ".svg",
+      ],
+    },
+    multiple: false,
+  });
 
-        setIsLoading(true);
-        setError(null);
-        setOriginalImage(file);
-        setConvertedImages([]);
-        setImageInfo(null);
+  const handleConvert = async () => {
+    if (!file) return;
 
-        try {
-            // Import WASM module
-            const wasmModule = await import('../../lib/image-converter/image_converter');
-            const { ImageConverter } = await wasmModule.default({
-                env: {
-                    memory: new WebAssembly.Memory({ initial: 256 }),
-                }
-            });
-            const converter = new ImageConverter();
+    setIsConverting(true);
+    setError("");
 
-            const fileBuffer = await file.arrayBuffer();
-            const uint8Array = new Uint8Array(fileBuffer);
-            const inputString = new TextDecoder().decode(uint8Array);
+    try {
+      const imageModule = await import("../../../rust/pkg/image_converter");
+      await imageModule.default(); // Initialize WASM module
+      const arrayBuffer = await (file as File).arrayBuffer();
+      const uint8Array = new Uint8Array(arrayBuffer);
 
-            const formats = [
-                {
-                    name: "PNG",
-                    func: () => converter.toPNG(inputString),
-                    mime: "image/png",
-                },
-                {
-                    name: "JPEG",
-                    func: () => converter.toJPEG(inputString, 90),
-                    mime: "image/jpeg",
-                },
-                {
-                    name: "BMP",
-                    func: () => converter.toBMP(inputString),
-                    mime: "image/bmp",
-                },
-                {
-                    name: "TGA",
-                    func: () => converter.toTGA(inputString),
-                    mime: "image/x-tga",
-                },
-            ];
+      const converter = new imageModule.ImageConverter(uint8Array);
+      const convertedData = converter.convert_to(selectedFormat);
+      const dimensions = converter.get_dimensions();
 
-            const converted = await Promise.all(
-                formats.map(async (format) => {
-                    const result = await format.func();
-                    const blob = new Blob([result], { type: format.mime });
-                    return {
-                        format: format.name,
-                        url: URL.createObjectURL(blob),
-                        size: blob.size,
-                    };
-                })
-            );
+      const blob = new Blob([convertedData], {
+        type: `image/${selectedFormat}`,
+      });
+      setConvertedImage({
+        url: URL.createObjectURL(blob),
+        dimensions,
+        format: selectedFormat,
+      });
+    } catch (err) {
+      setError((err as Error).message || "Failed to convert image");
+    } finally {
+      setIsConverting(false);
+    }
+  };
 
-            setConvertedImages(converted);
-            setImageInfo(converter.getImageInfo());
-        } catch (err) {
-            setError("画像の変換中にエラーが発生しました。");
-            console.error(err);
-        } finally {
-            setIsLoading(false);
-        }
-    }, []);
+  const handleDownload = () => {
+    if (!convertedImage) return;
 
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({
-        onDrop,
-        accept: {
-            "image/*": [".png", ".jpg", ".jpeg", ".bmp", ".tga"],
-        },
-        maxFiles: 1,
-    });
+    const link = document.createElement("a");
+    link.href = convertedImage?.url;
+    link.download = `converted-image.${convertedImage?.format}`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
-    return (
-        <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-4xl mx-auto">
-                <div className="text-center">
-                    <h1 className="text-3xl font-bold tracking-tight text-gray-900">
-                        画像フォーマット変換
-                    </h1>
-                    <p className="mt-2 text-lg text-gray-600">
-                        PNG, JPEG, BMP, TGA形式の相互変換が可能です
-                    </p>
-                </div>
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-4xl font-extrabold text-center mb-8 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+          Image Format Converter
+        </h1>
 
-                <div className="mt-12">
-                    <div
-                        {...getRootProps()}
-                        className={`border-2 border-dashed rounded-lg p-12 text-center cursor-pointer transition-colors
-                            ${
-                                isDragActive
-                                    ? "border-blue-500 bg-blue-50"
-                                    : "border-gray-300 hover:border-gray-400"
-                            }`}
-                    >
-                        <input {...getInputProps()} />
-                        <div className="flex flex-col items-center">
-                            <Upload
-                                className={`w-12 h-12 mb-4 ${
-                                    isDragActive ? "text-blue-500" : "text-gray-400"
-                                }`}
-                            />
-                            {isDragActive ? (
-                                <p className="text-lg text-blue-500">
-                                    ここにドロップしてください
-                                </p>
-                            ) : (
-                                <p className="text-lg text-gray-500">
-                                    クリックまたはドラッグ&ドロップで画像をアップロード
-                                </p>
-                            )}
-                            <p className="mt-2 text-sm text-gray-500">
-                                対応フォーマット: PNG, JPEG, BMP, TGA
-                            </p>
-                        </div>
-                    </div>
-
-                    {isLoading && (
-                        <div className="mt-8 text-center">
-                            <Loader2 className="w-8 h-8 mx-auto animate-spin text-blue-500" />
-                            <p className="mt-2 text-gray-600">変換中...</p>
-                        </div>
-                    )}
-
-                    {error && (
-                        <div className="mt-8 p-4 bg-red-50 rounded-lg">
-                            <p className="text-red-600">{error}</p>
-                        </div>
-                    )}
-
-                    {imageInfo && (
-                        <div className="mt-8 p-6 bg-white rounded-lg shadow">
-                            <h2 className="text-lg font-semibold text-gray-900">画像情報</h2>
-                            <dl className="mt-4 grid grid-cols-3 gap-4">
-                                <div>
-                                    <dt className="text-sm text-gray-500">幅</dt>
-                                    <dd className="mt-1 text-lg text-gray-900">
-                                        {imageInfo.width}px
-                                    </dd>
-                                </div>
-                                <div>
-                                    <dt className="text-sm text-gray-500">高さ</dt>
-                                    <dd className="mt-1 text-lg text-gray-900">
-                                        {imageInfo.height}px
-                                    </dd>
-                                </div>
-                                <div>
-                                    <dt className="text-sm text-gray-500">チャンネル数</dt>
-                                    <dd className="mt-1 text-lg text-gray-900">
-                                        {imageInfo.channels}
-                                    </dd>
-                                </div>
-                            </dl>
-                        </div>
-                    )}
-
-                    {convertedImages.length > 0 && (
-                        <div className="mt-8 space-y-6">
-                            <h2 className="text-lg font-semibold text-gray-900">変換結果</h2>
-                            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                                {convertedImages.map((image) => (
-                                    <div
-                                        key={image.format}
-                                        className="p-6 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
-                                    >
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex items-center">
-                                                <ImageIcon className="w-6 h-6 text-gray-400 mr-2" />
-                                                <span className="font-medium text-gray-900">
-                                                    {image.format}
-                                                </span>
-                                            </div>
-                                            <span className="text-sm text-gray-500">
-                                                {(image.size / 1024).toFixed(1)} KB
-                                            </span>
-                                        </div>
-                                        <a
-                                            href={image.url}
-                                            download={`converted.${image.format.toLowerCase()}`}
-                                            className="mt-4 flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                                        >
-                                            <Download className="w-4 h-4 mr-2" />
-                                            ダウンロード
-                                        </a>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-                </div>
+        <div className="grid md:grid-cols-2 gap-8">
+          {/* Input Section */}
+          <div className="space-y-6 bg-white p-6 rounded-2xl shadow-lg">
+            <div
+              {...getRootProps()}
+              className={`border-3 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all duration-300 ease-in-out transform hover:scale-[1.02]
+                  ${
+                    isDragActive
+                      ? "border-blue-500 bg-blue-50"
+                      : "border-gray-300 hover:border-blue-400"
+                  }`}
+            >
+              <input {...getInputProps()} />
+              <Upload className="mx-auto h-12 w-12 text-blue-500 mb-4" />
+              <p className="text-gray-600 font-medium">
+                {isDragActive
+                  ? "Drop the image here"
+                  : "Drag & drop an image, or click to select"}
+              </p>
             </div>
+
+            {file && (
+              <div className="space-y-4">
+                <div className="flex items-center space-x-4 bg-gray-50 p-3 rounded-lg">
+                  <ImageIcon className="h-5 w-5 text-blue-500" />
+                  <span className="text-sm text-gray-700 font-medium">
+                    {file?.name}
+                  </span>
+                </div>
+
+                <div className="flex space-x-4">
+                  <select
+                    title="Select format"
+                    value={selectedFormat}
+                    onChange={(e) => setSelectedFormat(e.target.value)}
+                    className="block w-full rounded-lg border-gray-200 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white"
+                  >
+                    <option value="png">PNG</option>
+                    <option value="jpeg">JPEG</option>
+                    <option value="webp">WebP</option>
+                    <option value="gif">GIF</option>
+                    <option value="bmp">BMP</option>
+                    <option value="ico">ICO</option>
+                    <option value="tiff">TIFF</option>
+                    <option value="svg">SVG</option>
+                    <option value="png">Lossless (PNG)</option>
+                  </select>
+
+                  <button
+                    type="button"
+                    onClick={handleConvert}
+                    disabled={isConverting || !file}
+                    className="px-6 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 transition-all duration-200 font-medium shadow-md"
+                  >
+                    {isConverting ? "Converting..." : "Convert"}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Output Section */}
+          <div className="space-y-6 bg-white p-6 rounded-2xl shadow-lg">
+            {error && (
+              <div className="p-4 bg-red-50 text-red-700 rounded-xl border border-red-200">
+                {error}
+              </div>
+            )}
+
+            {convertedImage && (
+              <div className="space-y-4">
+                <div className="aspect-w-16 aspect-h-9 bg-gray-50 rounded-xl overflow-hidden shadow-inner">
+                  <img
+                    src={convertedImage?.url}
+                    alt="Converted"
+                    className="object-contain"
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="text-sm text-gray-600 font-medium px-3 py-1 bg-gray-100 rounded-full">
+                    {convertedImage?.dimensions} •{" "}
+                    {convertedImage?.format.toUpperCase()}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={handleDownload}
+                    className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200 font-medium shadow-md"
+                  >
+                    <Download className="h-4 w-4" />
+                    <span>Download</span>
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
-export default ImageConverterPage;
+export default ImageConverter;

@@ -25,6 +25,12 @@ export default function Header() {
       >
         Idea Manager
       </Link>
+      <Link
+        href="/image-converter"
+        className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+      >
+        Idea Manager
+      </Link>
       {/* Add more navigation links here */}
     </>
   );
