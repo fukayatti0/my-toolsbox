@@ -1,6 +1,6 @@
 import { NextConfig } from "next";
-import WasmPackPlugin from "@wasm-tool/wasm-pack-plugin";
-import path from "path";
+// import WasmPackPlugin from "@wasm-tool/wasm-pack-plugin";
+// import path from "path";
 
 const nextConfig: NextConfig = {
   images: {
@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
   webpack: (config, { isServer }) => {
     config.experiments = {
       asyncWebAssembly: true,
+      layers: true,
     };
     config.output.webassemblyModuleFilename =
       (isServer ? "../" : "") + "static/wasm/webassembly.wasm";
