@@ -35,13 +35,15 @@ const ImageConverterPage = () => {
             // Ensure the WebAssembly module path is correct
             const imageConverterModule = await import(
                 "../../lib/image-converter/image_converter"
-            );
+            ).catch((err) => {
+                throw new Error("Failed to load WebAssembly module: " + err.message);
+            });
             const imageConverter = await imageConverterModule.default();
             const converter = new imageConverter.ImageConverter();
 
             const buffer = await file.arrayBuffer();
             const uint8Array = new Uint8Array(buffer);
-            const inputString = String.fromCharCode(...Array.from(uint8Array));
+            const inputString = new TextDecoder().decode(uint8Array);
 
             const formats = [
                 {

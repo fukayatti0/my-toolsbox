@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import type { Configuration } from "webpack";
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -12,7 +13,8 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  webpack: (config) => {
+  webpack: (config: Configuration) => {
+    config.resolve = config.resolve || {};
     config.resolve.fallback = { fs: false };
     config.experiments = {
       ...config.experiments,
@@ -21,6 +23,8 @@ const nextConfig: NextConfig = {
     };
 
     // WebAssemblyファイルを処理するためのローダーを追加
+    config.module = config.module || {};
+    config.module.rules = config.module.rules || [];
     config.module.rules.push({
       test: /\.wasm$/,
       type: 'webassembly/async',
