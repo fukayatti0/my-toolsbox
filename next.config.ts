@@ -10,10 +10,8 @@ const nextConfig: NextConfig = {
     config.experiments = {
       asyncWebAssembly: true,
     };
-    config.output.webassemblyModuleFilename = (isServer ? '../' : '') + 'static/wasm/webassembly.wasm';
-    return config;
-  },
-
+    config.output.webassemblyModuleFilename =
+      (isServer ? "../" : "") + "static/wasm/webassembly.wasm";
     return config;
   },
 };
