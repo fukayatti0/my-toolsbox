@@ -34,7 +34,7 @@ const ImageConverterPage = () => {
 
     try {
       // WebAssemblyモジュールの読み込み (実際の実装では適切なパスに変更してください)
-      const imageConverterModule = await import('../../components/image-converter/image_converter');
+const imageConverterModule = await import('../../lib/image-converter/image_converter');
       const imageConverter = await imageConverterModule.default();
       const converter = new imageConverter.ImageConverter();
 
