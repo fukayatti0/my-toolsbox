@@ -39,9 +39,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-src/lib/image-converter/image_converter.cpp
-src/lib/image-converter/stb_image.h
-src/lib/image-converter/stb_image_write.h
-
 rust/target
 rust/Cargo.lock
