@@ -48,7 +48,7 @@ const ImageConverter = () => {
     setError("");
 
     try {
-      const imageModule = await import("../../../rust/pkg/image_converter");
+      const imageModule = await import("../../../pkg/image_converter");
       await imageModule.default(); // Initialize WASM module
       const arrayBuffer = await (file as File).arrayBuffer();
       const uint8Array = new Uint8Array(arrayBuffer);
