@@ -12,8 +12,20 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  webpack: (config: any) => {
+  webpack: (config) => {
     config.resolve.fallback = { fs: false };
+    config.experiments = {
+      ...config.experiments,
+      asyncWebAssembly: true,
+      layers: true,
+    };
+
+    // WebAssemblyファイルを処理するためのローダーを追加
+    config.module.rules.push({
+      test: /\.wasm$/,
+      type: 'webassembly/async',
+    });
+
     return config;
   },
 };
