@@ -1,7 +1,8 @@
 "use client";
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import { useDropzone } from "react-dropzone";
 import { Upload, Image as ImageIcon, Download } from "lucide-react";
+import * as tiff from "tiff.js";
 
 const ImageConverter = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -13,6 +14,7 @@ const ImageConverter = () => {
   const [isConverting, setIsConverting] = useState(false);
   const [selectedFormat, setSelectedFormat] = useState("png");
   const [error, setError] = useState("");
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     setError("");
@@ -36,6 +38,7 @@ const ImageConverter = () => {
         ".ico",
         ".tiff",
         ".pdf",
+        ".svg",
       ],
     },
     multiple: false,
@@ -58,7 +61,10 @@ const ImageConverter = () => {
       const dimensions = converter.get_dimensions();
 
       const blob = new Blob([convertedData], {
-        type: `image/${selectedFormat}`,
+        type:
+          selectedFormat === "svg"
+            ? "image/svg+xml"
+            : `image/${selectedFormat}`,
       });
       setConvertedImage({
         url: URL.createObjectURL(blob),
@@ -82,6 +88,30 @@ const ImageConverter = () => {
     link.click();
     document.body.removeChild(link);
   };
+
+  const renderTiffImage = async (url: string) => {
+    const response = await fetch(url);
+    const arrayBuffer = await response.arrayBuffer();
+    const tiffImage = new tiff.TIFF(arrayBuffer);
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        const width = tiffImage.width();
+        const height = tiffImage.height();
+        canvas.width = width;
+        canvas.height = height;
+        const imageData = tiffImage.toImageData();
+        ctx.putImageData(imageData, 0, 0);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (convertedImage && selectedFormat === "tiff") {
+      renderTiffImage(convertedImage.url);
+    }
+  }, [convertedImage, selectedFormat]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4 sm:px-6 lg:px-8">
@@ -162,11 +192,20 @@ const ImageConverter = () => {
             {convertedImage && (
               <div className="space-y-4">
                 <div className="aspect-w-16 aspect-h-9 bg-gray-50 rounded-xl overflow-hidden shadow-inner">
-                  <img
-                    src={convertedImage?.url}
-                    alt="Converted"
-                    className="object-contain"
-                  />
+                  {selectedFormat === "svg" ? (
+                    <div
+                      dangerouslySetInnerHTML={{ __html: convertedImage.url }}
+                      className="object-contain"
+                    />
+                  ) : selectedFormat === "tiff" ? (
+                    <canvas ref={canvasRef} className="object-contain" />
+                  ) : (
+                    <img
+                      src={convertedImage?.url}
+                      alt="Converted"
+                      className="object-contain"
+                    />
+                  )}
                 </div>
 
                 <div className="flex items-center justify-between">
