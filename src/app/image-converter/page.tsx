@@ -35,7 +35,6 @@ const ImageConverter = () => {
         ".bmp",
         ".ico",
         ".tiff",
-        ".svg",
       ],
     },
     multiple: false,
@@ -76,13 +75,12 @@ const ImageConverter = () => {
     if (!convertedImage) return;
 
     const link = document.createElement("a");
-    const originalFileName = file?.name.split('.').slice(0, -1).join('.') || "converted-image";
     link.href = convertedImage?.url;
-    link.download = `${originalFileName}.${convertedImage?.format}`;
+    link.download = `converted-image.${convertedImage?.format}`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    };
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4 sm:px-6 lg:px-8">

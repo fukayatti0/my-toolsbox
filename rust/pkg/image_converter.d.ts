@@ -7,9 +7,10 @@ export class ImageConverter {
    */
   constructor(data: Uint8Array);
   /**
+   * @param {string} format
    * @returns {Uint8Array}
    */
-  convert_to_svg(): Uint8Array;
+  convert_to(format: string): Uint8Array;
   /**
    * @returns {string}
    */
@@ -22,11 +23,12 @@ export interface InitOutput {
   readonly memory: WebAssembly.Memory;
   readonly __wbg_imageconverter_free: (a: number, b: number) => void;
   readonly imageconverter_new: (a: number, b: number) => Array;
-  readonly imageconverter_convert_to_svg: (a: number) => Array;
+  readonly imageconverter_convert_to: (a: number, b: number, c: number) => Array;
   readonly imageconverter_get_dimensions: (a: number) => Array;
   readonly __wbindgen_export_0: WebAssembly.Table;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __externref_table_dealloc: (a: number) => void;
+  readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
   readonly __wbindgen_free: (a: number, b: number, c: number) => void;
   readonly __wbindgen_start: () => void;
 }
