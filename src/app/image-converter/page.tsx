@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useCallback, useEffect, useRef } from "react";
+import React, { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { Upload, Image as ImageIcon, Download } from "lucide-react";
 
@@ -13,7 +13,6 @@ const ImageConverter = () => {
   const [isConverting, setIsConverting] = useState(false);
   const [selectedFormat, setSelectedFormat] = useState("png");
   const [error, setError] = useState("");
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
     setError("");
@@ -88,97 +87,72 @@ const ImageConverter = () => {
     document.body.removeChild(link);
   };
 
-  // const renderTiffImage = async (url: string) => {
-  //   const response = await fetch(url);
-  //   const arrayBuffer = await response.arrayBuffer();
-    // const tiffImage = new tiff.TIFF(arrayBuffer);
-  //   const canvas = canvasRef.current;
-  //   if (canvas) {
-  //     const ctx = canvas.getContext("2d");
-  //     if (ctx) {
-  //       const width = tiffImage.width();
-  //       const height = tiffImage.height();
-  //       canvas.width = width;
-  //       canvas.height = height;
-  //       const imageData = tiffImage.toImageData();
-  //       ctx.putImageData(imageData, 0, 0);
-  //     }
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if (convertedImage && selectedFormat === "tiff") {
-  //     renderTiffImage(convertedImage.url);
-  //   }
-  // }, [convertedImage, selectedFormat]);
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-extrabold text-center mb-8 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-          Image Format Converter
-        </h1>
+      <div className="max-w-4xl mx-auto"></div>
+      <h1 className="text-4xl font-extrabold text-center mb-8 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+        Image Format Converter
+      </h1>
 
-        <div className="grid md:grid-cols-2 gap-8">
-          {/* Input Section */}
-          <div className="space-y-6 bg-white p-6 rounded-2xl shadow-lg">
-            <div
-              {...getRootProps()}
-              className={`border-3 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all duration-300 ease-in-out transform hover:scale-[1.02]
+      <div className="grid md:grid-cols-2 gap-8">
+        {/* Input Section */}
+        <div className="space-y-6 bg-white p-6 rounded-2xl shadow-lg">
+          <div
+            {...getRootProps()}
+            className={`border-3 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all duration-300 ease-in-out transform hover:scale-[1.02]
                   ${
                     isDragActive
                       ? "border-blue-500 bg-blue-50"
                       : "border-gray-300 hover:border-blue-400"
                   }`}
-            >
-              <input {...getInputProps()} />
-              <Upload className="mx-auto h-12 w-12 text-blue-500 mb-4" />
-              <p className="text-gray-600 font-medium">
-                {isDragActive
-                  ? "Drop the image here"
-                  : "Drag & drop an image, or click to select"}
-              </p>
-            </div>
-
-            {file && (
-              <div className="space-y-4">
-                <div className="flex items-center space-x-4 bg-gray-50 p-3 rounded-lg">
-                  <ImageIcon className="h-5 w-5 text-blue-500" />
-                  <span className="text-sm text-gray-700 font-medium">
-                    {file?.name}
-                  </span>
-                </div>
-
-                <div className="flex space-x-4">
-                  <select
-                    title="Select format"
-                    value={selectedFormat}
-                    onChange={(e) => setSelectedFormat(e.target.value)}
-                    className="block w-full rounded-lg border-gray-200 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white"
-                  >
-                    <option value="png">PNG</option>
-                    <option value="jpeg">JPEG</option>
-                    <option value="webp">WebP</option>
-                    <option value="gif">GIF</option>
-                    <option value="bmp">BMP</option>
-                    <option value="ico">ICO</option>
-                    <option value="tiff">TIFF</option>
-                    <option value="svg">SVG</option>
-                    <option value="png">Lossless (PNG)</option>
-                  </select>
-
-                  <button
-                    type="button"
-                    onClick={handleConvert}
-                    disabled={isConverting || !file}
-                    className="px-6 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 transition-all duration-200 font-medium shadow-md"
-                  >
-                    {isConverting ? "Converting..." : "Convert"}
-                  </button>
-                </div>
-              </div>
-            )}
+          >
+            <input {...getInputProps()} />
+            <Upload className="mx-auto h-12 w-12 text-blue-500 mb-4" />
+            <p className="text-gray-600 font-medium">
+              {isDragActive
+                ? "Drop the image here"
+                : "Drag & drop an image, or click to select"}
+            </p>
           </div>
+
+          {file && (
+            <div className="space-y-4">
+              <div className="flex items-center space-x-4 bg-gray-50 p-3 rounded-lg">
+                <ImageIcon className="h-5 w-5 text-blue-500" />
+                <span className="text-sm text-gray-700 font-medium">
+                  {file?.name}
+                </span>
+              </div>
+
+              <div className="flex space-x-4">
+                <select
+                  title="Select format"
+                  value={selectedFormat}
+                  onChange={(e) => setSelectedFormat(e.target.value)}
+                  className="block w-full rounded-lg border-gray-200 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white"
+                >
+                  <option value="png">PNG</option>
+                  <option value="jpeg">JPEG</option>
+                  <option value="webp">WebP</option>
+                  <option value="gif">GIF</option>
+                  <option value="bmp">BMP</option>
+                  <option value="ico">ICO</option>
+                  <option value="tiff">TIFF</option>
+                  <option value="svg">SVG</option>
+                  <option value="png">Lossless (PNG)</option>
+                </select>
+
+                <button
+                  type="button"
+                  onClick={handleConvert}
+                  disabled={isConverting || !file}
+                  className="px-6 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 transition-all duration-200 font-medium shadow-md"
+                >
+                  {isConverting ? "Converting..." : "Convert"}
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Output Section */}
           <div className="space-y-6 bg-white p-6 rounded-2xl shadow-lg">
@@ -191,20 +165,11 @@ const ImageConverter = () => {
             {convertedImage && (
               <div className="space-y-4">
                 <div className="aspect-w-16 aspect-h-9 bg-gray-50 rounded-xl overflow-hidden shadow-inner">
-                  {selectedFormat === "svg" ? (
-                    <div
-                      dangerouslySetInnerHTML={{ __html: convertedImage.url }}
-                      className="object-contain"
-                    />
-                  ) : selectedFormat === "tiff" ? (
-                    <canvas ref={canvasRef} className="object-contain" />
-                  ) : (
-                    <img
-                      src={convertedImage?.url}
-                      alt="Converted"
-                      className="object-contain"
-                    />
-                  )}
+                  <img
+                    src={convertedImage?.url}
+                    alt="Converted"
+                    className="object-contain"
+                  />
                 </div>
 
                 <div className="flex items-center justify-between">
