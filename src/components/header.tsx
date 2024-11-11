@@ -29,7 +29,7 @@ export default function Header() {
         href="/image-converter"
         className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
       >
-        Idea Manager
+        Image Convereter
       </Link>
       {/* Add more navigation links here */}
     </>

@@ -43,7 +43,7 @@ export default function Home() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              ツール2
+              Image Converter
             </a>
             <a
               className="rounded-full border border-white transition-colors flex items-center justify-center hover:bg-white hover:text-black text-sm sm:text-base h-12 px-5 sm:min-w-44 shadow-lg"
