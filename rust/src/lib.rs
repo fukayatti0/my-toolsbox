@@ -89,7 +89,14 @@ impl ImageConverter {
         svg::write(&mut svg_data, &svg_document)
             .map_err(|e| JsError::new(&format!("Failed to write SVG: {}", e)))?;
 
-        Ok(svg_data)
+        // Compress the SVG data
+        let mut encoder = flate2::write::GzEncoder::new(Vec::new(), flate2::Compression::default());
+        std::io::copy(&mut &svg_data[..], &mut encoder)
+            .map_err(|e| JsError::new(&format!("Failed to compress SVG: {}", e)))?;
+        let compressed_svg = encoder.finish()
+            .map_err(|e| JsError::new(&format!("Failed to finish compression: {}", e)))?;
+
+        Ok(compressed_svg)
     }
 }
 
