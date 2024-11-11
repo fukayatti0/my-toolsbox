@@ -1,6 +1,8 @@
 use wasm_bindgen::prelude::*;
-use image::{DynamicImage, GenericImageView, ImageOutputFormat};
+use image::{DynamicImage, GenericImageView, ImageOutputFormat, Rgba};
 use std::io::{Cursor, Write};
+use svg::node::element::Rectangle;
+use svg::Document;
 
 #[wasm_bindgen]
 pub struct ImageConverter {
@@ -44,26 +46,44 @@ impl ImageConverter {
 
     fn convert_to_svg(&self) -> Result<Vec<u8>, JsError> {
         let (width, height) = self.image.dimensions();
-        let mut svg_data = Vec::with_capacity((width * height * 100) as usize);
+        let mut svg_document = Document::new().set(
+            "viewBox",
+            (0, 0, width, height),
+        );
 
-        svg_data.write_all(b"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")?;
-        svg_data.write_all(b"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"")?;
-        svg_data.write_all(width.to_string().as_bytes())?;
-        svg_data.write_all(b"\" height=\"")?;
-        svg_data.write_all(height.to_string().as_bytes())?;
-        svg_data.write_all(b"\">\n")?;
+        for y in 0..height {
+            for x in 0..width {
+                let pixel_color = self.image.get_pixel(x, y);
+                let rgb_alpha = pixel_color[3];
+                let opacity = if rgb_alpha == 0 {
+                    0.0
+                } else if rgb_alpha == 255 {
+                    1.0
+                } else {
+                    f32::from(rgb_alpha) / 255.0
+                };
 
-        for (x, y, pixel) in self.image.pixels() {
-            let [r, g, b, a] = pixel.0;
-
-            svg_data.write_all(format!(
-                "  <rect x=\"{}\" y=\"{}\" width=\"1\" height=\"1\" fill=\"rgba({}, {}, {}, {})\" />\n",
-                x, y, r, g, b, a
-            ).as_bytes())?;
+                if rgb_alpha != 0 {
+                    let rectangle = Rectangle::new()
+                        .set("x", x)
+                        .set("y", y)
+                        .set("width", 1)
+                        .set("height", 1)
+                        .set("fill", rgb_to_hex(pixel_color))
+                        .set("fill-opacity", opacity);
+                    svg_document = svg_document.add(rectangle);
+                }
+            }
         }
 
-        svg_data.write_all(b"</svg>")?;
+        let mut svg_data = Vec::new();
+        svg::write(&mut svg_data, &svg_document)
+            .map_err(|e| JsError::new(&format!("Failed to write SVG: {}", e)))?;
 
         Ok(svg_data)
     }
+}
+
+fn rgb_to_hex(rgb: Rgba<u8>) -> String {
+    format!("#{:02X}{:02X}{:02X}", rgb[0], rgb[1], rgb[2])
 }
