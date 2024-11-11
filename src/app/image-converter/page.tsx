@@ -2,7 +2,6 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
 import { useDropzone } from "react-dropzone";
 import { Upload, Image as ImageIcon, Download } from "lucide-react";
-import * as tiff from "tiff.js";
 
 const ImageConverter = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -89,29 +88,29 @@ const ImageConverter = () => {
     document.body.removeChild(link);
   };
 
-  const renderTiffImage = async (url: string) => {
-    const response = await fetch(url);
-    const arrayBuffer = await response.arrayBuffer();
-    const tiffImage = new tiff.TIFF(arrayBuffer);
-    const canvas = canvasRef.current;
-    if (canvas) {
-      const ctx = canvas.getContext("2d");
-      if (ctx) {
-        const width = tiffImage.width();
-        const height = tiffImage.height();
-        canvas.width = width;
-        canvas.height = height;
-        const imageData = tiffImage.toImageData();
-        ctx.putImageData(imageData, 0, 0);
-      }
-    }
-  };
+  // const renderTiffImage = async (url: string) => {
+  //   const response = await fetch(url);
+  //   const arrayBuffer = await response.arrayBuffer();
+    // const tiffImage = new tiff.TIFF(arrayBuffer);
+  //   const canvas = canvasRef.current;
+  //   if (canvas) {
+  //     const ctx = canvas.getContext("2d");
+  //     if (ctx) {
+  //       const width = tiffImage.width();
+  //       const height = tiffImage.height();
+  //       canvas.width = width;
+  //       canvas.height = height;
+  //       const imageData = tiffImage.toImageData();
+  //       ctx.putImageData(imageData, 0, 0);
+  //     }
+  //   }
+  // };
 
-  useEffect(() => {
-    if (convertedImage && selectedFormat === "tiff") {
-      renderTiffImage(convertedImage.url);
-    }
-  }, [convertedImage, selectedFormat]);
+  // useEffect(() => {
+  //   if (convertedImage && selectedFormat === "tiff") {
+  //     renderTiffImage(convertedImage.url);
+  //   }
+  // }, [convertedImage, selectedFormat]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4 sm:px-6 lg:px-8">
