@@ -1,5 +1,6 @@
-use image::{DynamicImage, GenericImageView, ImageOutputFormat, Rgba, ImageEncoder};
+use image::{DynamicImage, GenericImageView, ImageOutputFormat, Rgba};
 use std::io::Cursor;
+// use png::HasParameters; // Remove this line as it's no longer needed
 use svg::node::element::Rectangle;
 use svg::Document;
 use wasm_bindgen::prelude::*;
@@ -23,14 +24,13 @@ impl ImageConverter {
         let mut buffer = Vec::new();
         let format = match format {
             "jpeg" => ImageOutputFormat::Jpeg(80),
-            "png" => ImageOutputFormat::Png,
+            "png" => return self.convert_to_png(),
             "gif" => ImageOutputFormat::Gif,
             "bmp" => ImageOutputFormat::Bmp,
             "ico" => ImageOutputFormat::Ico,
             "tiff" => ImageOutputFormat::Tiff,
             "webp" => ImageOutputFormat::WebP,
             "svg" => return self.convert_to_svg(),
-            "lossless" => return self.convert_to_lossless(),
             _ => return Err(JsError::new("Unsupported format")),
         };
 
@@ -44,6 +44,19 @@ impl ImageConverter {
     pub fn get_dimensions(&self) -> String {
         let (width, height) = self.image.dimensions();
         format!("{}x{}", width, height)
+    }
+
+    fn convert_to_png(&self) -> Result<Vec<u8>, JsError> {
+        let mut buffer = Vec::new();
+        {
+            let w = &mut Cursor::new(&mut buffer);
+            let mut encoder = png::Encoder::new(w, self.image.width(), self.image.height());
+            encoder.set_color(png::ColorType::Rgba);
+            encoder.set_depth(png::BitDepth::Eight);
+            let mut writer = encoder.write_header().map_err(|e| JsError::new(&format!("Failed to write PNG header: {}", e)))?;
+            writer.write_image_data(self.image.to_rgba8().as_raw()).map_err(|e| JsError::new(&format!("Failed to write PNG data: {}", e)))?;
+        }
+        Ok(buffer)
     }
 
     fn convert_to_svg(&self) -> Result<Vec<u8>, JsError> {
@@ -91,18 +104,6 @@ impl ImageConverter {
             .map_err(|e| JsError::new(&format!("Failed to write SVG: {}", e)))?;
 
         Ok(svg_data)
-    }
-
-    fn convert_to_lossless(&self) -> Result<Vec<u8>, JsError> {
-        let mut buffer = Vec::new();
-        let encoder = image::codecs::png::PngEncoder::new_with_quality(&mut buffer, image::codecs::png::CompressionType::Best, image::codecs::png::FilterType::Adaptive);
-        encoder.encode(
-            self.image.to_rgba8().as_raw(),
-            self.image.width(),
-            self.image.height(),
-            image::ColorType::Rgba8,
-        ).map_err(|e| JsError::new(&format!("Failed to convert image to lossless: {}", e)))?;
-        Ok(buffer)
     }
 }
 
