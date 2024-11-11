@@ -13,7 +13,7 @@ web-sys = { version = "0.3", features = ["console"] }
 js-sys = "0.3"
 resvg = "0.28.0"
 base64 = "0.22.1"
-pdf = "0.8.0"
+pdf = "0.6"
 serde_json = "1.0.132"
 svg = "0.14"
 flate2 = "1.0"

@@ -1,6 +1,5 @@
 use image::{DynamicImage, GenericImageView, ImageOutputFormat, Rgba};
 use std::io::Cursor;
-// use png::HasParameters; // Remove this line as it's no longer needed
 use svg::node::element::Rectangle;
 use svg::Document;
 use wasm_bindgen::prelude::*;
@@ -14,8 +13,10 @@ pub struct ImageConverter {
 impl ImageConverter {
     #[wasm_bindgen(constructor)]
     pub fn new(data: &[u8]) -> Result<ImageConverter, JsError> {
-        let img = image::load_from_memory(data)
-            .map_err(|e| JsError::new(&format!("Failed to load image: {}", e)))?;
+        let img = match image::load_from_memory(data) {
+            Ok(img) => img,
+            Err(e) => return Err(JsError::new(&format!("Failed to load image: {}", e))),
+        };
 
         Ok(ImageConverter { image: img })
     }
@@ -34,11 +35,10 @@ impl ImageConverter {
             _ => return Err(JsError::new("Unsupported format")),
         };
 
-        self.image
-            .write_to(&mut Cursor::new(&mut buffer), format)
-            .map_err(|e| JsError::new(&format!("Failed to convert image: {}", e)))?;
-
-        Ok(buffer)
+        match self.image.write_to(&mut Cursor::new(&mut buffer), format) {
+            Ok(_) => Ok(buffer),
+            Err(e) => Err(JsError::new(&format!("Failed to convert image: {}", e))),
+        }
     }
 
     pub fn get_dimensions(&self) -> String {
@@ -53,8 +53,13 @@ impl ImageConverter {
             let mut encoder = png::Encoder::new(w, self.image.width(), self.image.height());
             encoder.set_color(png::ColorType::Rgba);
             encoder.set_depth(png::BitDepth::Eight);
-            let mut writer = encoder.write_header().map_err(|e| JsError::new(&format!("Failed to write PNG header: {}", e)))?;
-            writer.write_image_data(self.image.to_rgba8().as_raw()).map_err(|e| JsError::new(&format!("Failed to write PNG data: {}", e)))?;
+            let mut writer = match encoder.write_header() {
+                Ok(writer) => writer,
+                Err(e) => return Err(JsError::new(&format!("Failed to write PNG header: {}", e))),
+            };
+            if let Err(e) = writer.write_image_data(self.image.to_rgba8().as_raw()) {
+                return Err(JsError::new(&format!("Failed to write PNG data: {}", e)));
+            }
         }
         Ok(buffer)
     }
@@ -100,10 +105,10 @@ impl ImageConverter {
         }
 
         let mut svg_data = Vec::new();
-        svg::write(&mut svg_data, &svg_document)
-            .map_err(|e| JsError::new(&format!("Failed to write SVG: {}", e)))?;
-
-        Ok(svg_data)
+        match svg::write(&mut svg_data, &svg_document) {
+            Ok(_) => Ok(svg_data),
+            Err(e) => Err(JsError::new(&format!("Failed to write SVG: {}", e))),
+        }
     }
 }
 

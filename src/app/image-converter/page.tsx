@@ -35,6 +35,7 @@ const ImageConverter = () => {
         ".bmp",
         ".ico",
         ".tiff",
+        ".pdf",
       ],
     },
     multiple: false,
