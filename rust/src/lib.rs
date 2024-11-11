@@ -1,4 +1,4 @@
-use image::{DynamicImage, GenericImageView, ImageOutputFormat, Rgba};
+use image::{DynamicImage, GenericImageView, ImageOutputFormat, Rgba, ImageEncoder};
 use std::io::Cursor;
 use svg::node::element::Rectangle;
 use svg::Document;
@@ -30,6 +30,7 @@ impl ImageConverter {
             "tiff" => ImageOutputFormat::Tiff,
             "webp" => ImageOutputFormat::WebP,
             "svg" => return self.convert_to_svg(),
+            "lossless" => return self.convert_to_lossless(),
             _ => return Err(JsError::new("Unsupported format")),
         };
 
@@ -89,14 +90,19 @@ impl ImageConverter {
         svg::write(&mut svg_data, &svg_document)
             .map_err(|e| JsError::new(&format!("Failed to write SVG: {}", e)))?;
 
-        // Compress the SVG data
-        let mut encoder = flate2::write::GzEncoder::new(Vec::new(), flate2::Compression::default());
-        std::io::copy(&mut &svg_data[..], &mut encoder)
-            .map_err(|e| JsError::new(&format!("Failed to compress SVG: {}", e)))?;
-        let compressed_svg = encoder.finish()
-            .map_err(|e| JsError::new(&format!("Failed to finish compression: {}", e)))?;
+        Ok(svg_data)
+    }
 
-        Ok(compressed_svg)
+    fn convert_to_lossless(&self) -> Result<Vec<u8>, JsError> {
+        let mut buffer = Vec::new();
+        let encoder = image::codecs::png::PngEncoder::new_with_quality(&mut buffer, image::codecs::png::CompressionType::Best, image::codecs::png::FilterType::Adaptive);
+        encoder.encode(
+            self.image.to_rgba8().as_raw(),
+            self.image.width(),
+            self.image.height(),
+            image::ColorType::Rgba8,
+        ).map_err(|e| JsError::new(&format!("Failed to convert image to lossless: {}", e)))?;
+        Ok(buffer)
     }
 }
 
