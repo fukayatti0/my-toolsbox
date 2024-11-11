@@ -6,7 +6,14 @@ const { execSync } = require("child_process");
 
 const nextConfig: NextConfig = {
   images: {
-    domains: ["avatars.githubusercontent.com"],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'avatars.githubusercontent.com',
+        port: '',
+        pathname: '/u/**',
+      },
+    ],
   },
   webpack: (config, { isServer }) => {
     config.experiments = {
