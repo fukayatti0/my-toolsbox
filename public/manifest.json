@@ -21,6 +21,6 @@
   "lang": "ja",
   "name": "My tools box",
   "short_name": "my tools box",
-  "start_url": "https://fukayatti0-toolsbox.vercel.app",
-  "scope": "https://fukayatti0-toolsbox.vercel.app/"
+  "start_url": "/",
+  "scope": "/"
 }
