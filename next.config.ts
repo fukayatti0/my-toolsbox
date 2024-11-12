@@ -41,7 +41,7 @@ const nextConfig: NextConfig = {
 
 const finalConfig = withPWA({
   dest: 'public',
-  disable: process.env.NODE_ENV === 'development'
+  disable: process.env.NODE_ENV === 'development',
 });
 
 export default finalConfig;
