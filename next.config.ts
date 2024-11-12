@@ -5,16 +5,16 @@ import withPWA from 'next-pwa';
 const { execSync } = require("child_process");
 
 const nextConfig: NextConfig = {
-  images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'avatars.githubusercontent.com',
-        port: '',
-        pathname: '/u/**',
-      },
-    ],
-  },
+  // images: {
+  //   remotePatterns: [
+  //     {
+  //       protocol: 'https',
+  //       hostname: 'avatars.githubusercontent.com',
+  //       port: '',
+  //       pathname: '/u/**',
+  //     },
+  //   ],
+  // },
   webpack: (config, { isServer }) => {
     config.experiments = {
       asyncWebAssembly: true,
