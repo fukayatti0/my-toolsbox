@@ -1,24 +1,39 @@
 'use client';
+
 import localFont from "next/font/local";
 import "./globals.css";
 import NextAuthProvider from "@/components/NextAuthProvider";
 import Header from "@/components/header";
 import Head from "next/head";
 import { useEffect } from "react";
+import StarryBackground from "@/components/StarryBackground";
 
-export default function RootLayout({
-  children,
-}: Readonly<{
+const geistSans = localFont({
+  src: "./fonts/GeistVF.woff",
+  variable: "--font-geist-sans",
+  weight: "100 900",
+});
+
+const geistMono = localFont({
+  src: "./fonts/GeistMonoVF.woff",
+  variable: "--font-geist-mono",
+  weight: "100 900",
+});
+
+interface RootLayoutProps {
   children: React.ReactNode;
-}>) {
+}
+
+export default function RootLayout({ children }: Readonly<RootLayoutProps>) {
   useEffect(() => {
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').then(registration => {
+    if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+      window.addEventListener('load', async () => {
+        try {
+          const registration = await navigator.serviceWorker.register('/sw.js');
           console.log('SW registered: ', registration);
-        }).catch(registrationError => {
-          console.log('SW registration failed: ', registrationError);
-        });
+        } catch (error) {
+          console.log('SW registration failed: ', error);
+        }
       });
     }
   }, []);
@@ -29,33 +44,16 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.json" />
         <title>My Tools Box</title>
       </Head>
-      <body className="relative min-h-screen overflow-hidden antialiased">
-        <div className="absolute inset-0 z-0 starry-background"></div>
-        <div className="relative z-10">
-          <NextAuthProvider>
-            <Header />
+      <body 
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-gradient-to-b from-gray-900 to-black`}
+      >
+        <StarryBackground />
+        <NextAuthProvider>
+          <Header />
+          <main className="relative z-10">
             {children}
-          </NextAuthProvider>
-        </div>
-        <style jsx>{`
-          .starry-background {
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, white 1px, transparent 1px);
-            background-size: 50px 50px;
-            animation: starryAnimation 100s linear infinite;
-          }
-
-          @keyframes starryAnimation {
-            from {
-              transform: translate(-50%, -50%);
-            }
-            to {
-              transform: translate(50%, 50%);
-            }
-          }
-        `}</style>
+          </main>
+        </NextAuthProvider>
       </body>
     </html>
   );
