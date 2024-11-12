@@ -1,4 +1,4 @@
-'use effect';
+'use client';
 import localFont from "next/font/local";
 import "./globals.css";
 import NextAuthProvider from "@/components/NextAuthProvider";
