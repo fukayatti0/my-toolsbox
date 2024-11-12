@@ -13,7 +13,6 @@ export default function Home() {
       <Head>
         <title>My Tools Box</title>
         <meta name="description" content="My Tools Box" />
-        <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)] text-white bg-gradient-to-r from-blue-500 to-purple-500 bg-cover bg-center">
         <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
@@ -32,7 +31,6 @@ export default function Home() {
             <a
               className="rounded-full border border-white transition-colors flex items-center justify-center hover:bg-white hover:text-black text-sm sm:text-base h-12 px-5 sm:min-w-44 shadow-lg"
               href="/idea-manager"
-              target="_blank"
               rel="noopener noreferrer"
             >
               Idea Manager
@@ -40,7 +38,6 @@ export default function Home() {
             <a
               className="rounded-full border border-white transition-colors flex items-center justify-center hover:bg-white hover:text-black text-sm sm:text-base h-12 px-5 sm:min-w-44 shadow-lg"
               href="/image-converter"
-              target="_blank"
               rel="noopener noreferrer"
             >
               Image Converter

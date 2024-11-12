@@ -1,7 +1,9 @@
 import localFont from "next/font/local";
 import "./globals.css";
-import NextAuthProvider from '@/components/NextAuthProvider'
-import Header from '@/components/header'
+import NextAuthProvider from "@/components/NextAuthProvider";
+import Header from "@/components/header";
+import Head from "next/head";
+import { useEffect } from "react";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -19,14 +21,28 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(registration => {
+          console.log('SW registered: ', registration);
+        }).catch(registrationError => {
+          console.log('SW registration failed: ', registrationError);
+        });
+      });
+    }
+  }, []);
+
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <Head>
+        <link rel="manifest" href="/manifest.json" />
+        <title>My Tools Box</title>
+      </Head>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <NextAuthProvider>
           <Header /> {/* Adjust the margin-top value as needed */}
-            {children}
+          {children}
         </NextAuthProvider>
       </body>
     </html>
