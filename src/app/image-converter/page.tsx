@@ -111,7 +111,7 @@ const ImageConverter = () => {
               transition={{ duration: 0.5 }}
             >
               <motion.div
-                {...getRootProps()}
+                {...getRootProps({ refKey: 'ref' })}
                 className={`border-3 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all duration-300 ease-in-out transform hover:scale-[1.02]
                   ${
                     isDragActive
