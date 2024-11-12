@@ -3,6 +3,7 @@ import React, { useState, useCallback } from "react";
 import { useDropzone } from "react-dropzone";
 import { Upload, Image as ImageIcon, Download } from "lucide-react";
 import Head from "next/head";
+import { motion } from "framer-motion";
 
 const ImageConverter = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -92,14 +93,24 @@ const ImageConverter = () => {
       </Head>
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl font-extrabold text-center mb-8 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+          <motion.h1
+            className="text-4xl font-extrabold text-center mb-8 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent"
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
             Image Format Converter
-          </h1>
+          </motion.h1>
 
           <div className="grid md:grid-cols-2 gap-8">
             {/* Input Section */}
-            <div className="space-y-6 bg-white p-6 rounded-2xl shadow-lg">
-              <div
+            <motion.div
+              className="space-y-6 bg-white p-6 rounded-2xl shadow-lg"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              <motion.div
                 {...getRootProps()}
                 className={`border-3 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all duration-300 ease-in-out transform hover:scale-[1.02]
                   ${
@@ -107,6 +118,7 @@ const ImageConverter = () => {
                       ? "border-blue-500 bg-blue-50"
                       : "border-gray-300 hover:border-blue-400"
                   }`}
+                whileHover={{ scale: 1.05 }}
               >
                 <input {...getInputProps()} />
                 <Upload className="mx-auto h-12 w-12 text-blue-500 mb-4" />
@@ -115,10 +127,15 @@ const ImageConverter = () => {
                     ? "Drop the image here"
                     : "Drag & drop an image, or click to select"}
                 </p>
-              </div>
+              </motion.div>
 
               {file && (
-                <div className="space-y-4">
+                <motion.div
+                  className="space-y-4"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5 }}
+                >
                   <div className="flex items-center space-x-4 bg-gray-50 p-3 rounded-lg">
                     <ImageIcon className="h-5 w-5 text-blue-500" />
                     <span className="text-sm text-gray-700 font-medium">
@@ -144,29 +161,45 @@ const ImageConverter = () => {
                       <option value="png">Lossless (PNG)</option>
                     </select>
 
-                    <button
+                    <motion.button
                       type="button"
                       onClick={handleConvert}
                       disabled={isConverting || !file}
                       className="px-6 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 transition-all duration-200 font-medium shadow-md"
+                      whileHover={{ scale: 1.05 }}
                     >
                       {isConverting ? "Converting..." : "Convert"}
-                    </button>
+                    </motion.button>
                   </div>
-                </div>
+                </motion.div>
               )}
-            </div>
+            </motion.div>
 
             {/* Output Section */}
-            <div className="space-y-6 bg-white p-6 rounded-2xl shadow-lg">
+            <motion.div
+              className="space-y-6 bg-white p-6 rounded-2xl shadow-lg"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+            >
               {error && (
-                <div className="p-4 bg-red-50 text-red-700 rounded-xl border border-red-200">
+                <motion.div
+                  className="p-4 bg-red-50 text-red-700 rounded-xl border border-red-200"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5 }}
+                >
                   {error}
-                </div>
+                </motion.div>
               )}
 
               {convertedImage && (
-                <div className="space-y-4">
+                <motion.div
+                  className="space-y-4"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.5 }}
+                >
                   <div className="aspect-w-16 aspect-h-9 bg-gray-50 rounded-xl overflow-hidden shadow-inner">
                     <img
                       src={convertedImage?.url}
@@ -181,18 +214,19 @@ const ImageConverter = () => {
                       {convertedImage?.format.toUpperCase()}
                     </div>
 
-                    <button
+                    <motion.button
                       type="button"
                       onClick={handleDownload}
                       className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-lg hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200 font-medium shadow-md"
+                      whileHover={{ scale: 1.05 }}
                     >
                       <Download className="h-4 w-4" />
                       <span>Download</span>
-                    </button>
+                    </motion.button>
                   </div>
-                </div>
+                </motion.div>
               )}
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>
