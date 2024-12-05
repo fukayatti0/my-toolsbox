@@ -24,8 +24,8 @@ impl ImageConverter {
     pub fn convert_to(&self, format: &str) -> Result<Vec<u8>, JsError> {
         let mut buffer = Vec::new();
         let format = match format {
-            "jpeg" => ImageOutputFormat::Jpeg(80),
-            "png" => return self.convert_to_png(),
+            "jpeg" => ImageOutputFormat::Jpeg(),
+            "png" => ImageOutputFormat::Png(),
             "gif" => ImageOutputFormat::Gif,
             "bmp" => ImageOutputFormat::Bmp,
             "ico" => ImageOutputFormat::Ico,
@@ -44,24 +44,6 @@ impl ImageConverter {
     pub fn get_dimensions(&self) -> String {
         let (width, height) = self.image.dimensions();
         format!("{}x{}", width, height)
-    }
-
-    fn convert_to_png(&self) -> Result<Vec<u8>, JsError> {
-        let mut buffer = Vec::new();
-        {
-            let w = &mut Cursor::new(&mut buffer);
-            let mut encoder = png::Encoder::new(w, self.image.width(), self.image.height());
-            encoder.set_color(png::ColorType::Rgba);
-            encoder.set_depth(png::BitDepth::Eight);
-            let mut writer = match encoder.write_header() {
-                Ok(writer) => writer,
-                Err(e) => return Err(JsError::new(&format!("Failed to write PNG header: {}", e))),
-            };
-            if let Err(e) = writer.write_image_data(self.image.to_rgba8().as_raw()) {
-                return Err(JsError::new(&format!("Failed to write PNG data: {}", e)));
-            }
-        }
-        Ok(buffer)
     }
 
     fn convert_to_svg(&self) -> Result<Vec<u8>, JsError> {
